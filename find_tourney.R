@@ -11,4 +11,4 @@ last.game <- resR[which.max(resR$daynum),]
 as.Date(last.seas$dayzero, format="%m/%d/%Y") + days(last.game$daynum)
 teams[teams$id %in% c(last.game$wteam, last.game$lteam),]
 #Verify that Miami beat Florida on March 17th, 2013!
-browseUrl("http://en.wikipedia.org/wiki/2013_ACC_Men%27s_Basketball_Tournament")
+browseURL("http://en.wikipedia.org/wiki/2013_ACC_Men%27s_Basketball_Tournament")
