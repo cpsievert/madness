@@ -16,15 +16,26 @@ res <- plyr::join(res, seeds, by=c("lteam", "season"))
 #add a region identifier
 res$wregion <- substr(res$wseed, 0, 1)
 res$lregion <- substr(res$lseed, 0, 1)
-res$final_four <- as.integer(res$wregion != res$lregion)
-res[grep("[A-Z][0-9]+b", res$wseed),] #why are there a and b seeds? Hopefully that doesn't matter...
 
-#get a matchup identifier (with higher seed put first)
+#start building a matchup identifier (which is used to determine round)
+res$matchup <- NA
 res$wrank <- as.integer(str_extract_all(res$wseed, "[0-9]+"))
 res$lrank <- as.integer(str_extract_all(res$lseed, "[0-9]+"))
 lowseed <- with(res, ifelse(wrank < lrank, wrank, lrank))
 highseed <- with(res, ifelse(wrank > lrank, wrank, lrank))
 res$matchup <- paste(lowseed, highseed, sep="-")
+
+#final four can have any matchup (so matchup really shouldn't count)!
+res$matchup[res$wregion != res$lregion] <- "final_four"
+
+#it seems as though teams that made it through the 'preliminary' round keep an 'a' or 'b' at the end of the seed
+#we can identify a 'preliminary game' if both teams have 'a' or 'b'
+bothseed <- with(res, paste(wseed, lseed, sep="-"))
+res[grep("[A-Z][0-9]+[a-z]-[A-Z][0-9]+[a-z]", bothseed), "matchup"] <- "preliminary"
+#now we can get rid of the 'a'/'b' and treat everyone the same
+res$wseed <- sub("[a-z]$", "", res$wseed)
+res$lseed <- sub("[a-z]$", "", res$lseed)
+
 
 #function that takes on a vector of possible seeds and produces matchups (with higher seed put first)
 getMatchups <- function(seeds) {
@@ -67,16 +78,19 @@ rd4 <- getMatchups(c(a, b, c, d))
 rd4 <- rd4[!rd4 %in% c(rd1, rd2, rd3)]
 
 #finally, create the round identifier
-res$round <- NA
-#final four can have any matchup!
-res$round[as.logical(res$final_four)] <- "final_four"
-res$round[res$matchup %in% rd1] <- "1"
-res$round[res$matchup %in% rd2] <- "2"
-res$round[res$matchup %in% rd3] <- "3"
-res$round[res$matchup %in% rd4] <- "4"
-res$round[is.na(res$round)] <- "preliminary_round?"
+#have to split across seasons or weird stuff happens
+res$round <- res$matchup
+res$round[ddply(res, "season", summarise, rd1=matchup %in% rd1)[,2]] <- "1"
+res$round[ddply(res, "season", summarise, rd2=matchup %in% rd2)[,2]] <- "2"
+res$round[ddply(res, "season", summarise, rd3=matchup %in% rd3)[,2]] <- "3"
+res$round[ddply(res, "season", summarise, rd4=matchup %in% rd4)[,2]] <- "4"
 
-#don't really need to save these columns
+#sanity checks
+table(res$round)/length(unique(res$season))
+#um does somebody know if this makes sense?
+table(subset(res, round %in% "preliminary")$season)
+
+#don't have to save these columns
 res <- res[,-grep("final_four|wrank|lrank|wregion|lregion", names(res))]
 
 write.csv(res, file="tourney_results_with_round.csv", row.names=FALSE)
