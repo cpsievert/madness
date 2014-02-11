@@ -1,3 +1,8 @@
+*~
+\#*
+.\#*
+*.Rhistory
+
 *.sqlite3
 create_db.R
 join_tables.R
