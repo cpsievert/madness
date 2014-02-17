@@ -1,0 +1,357 @@
+id,name
+501,Abilene Chr
+502,Air Force
+503,Akron
+504,Alabama
+505,Alabama A&M
+506,Alabama St
+507,Albany NY
+508,Alcorn St
+509,American Univ
+510,Appalachian St
+511,Arizona
+512,Arizona St
+513,Ark Little Rock
+514,Ark Pine Bluff
+515,Arkansas
+516,Arkansas St
+517,Army
+518,Auburn
+519,Austin Peay
+520,Ball St
+521,Baylor
+522,Belmont
+523,Bethune-Cookman
+524,Binghamton
+525,Birmingham So
+526,Boise St
+527,Boston College
+528,Boston Univ
+529,Bowling Green
+530,Bradley
+531,Brown
+532,Bryant
+533,Bucknell
+534,Buffalo
+535,Butler
+536,BYU
+537,C Michigan
+538,Cal Poly SLO
+539,California
+540,Campbell
+541,Canisius
+542,Cent Arkansas
+543,Centenary
+544,Central Conn
+545,Charleston So
+546,Charlotte
+547,Chattanooga
+548,Chicago St
+549,Cincinnati
+550,Citadel
+551,Clemson
+552,Cleveland St
+553,Coastal Car
+554,Col Charleston
+555,Colgate
+556,Colorado
+557,Colorado St
+558,Columbia
+559,Connecticut
+560,Coppin St
+561,Cornell
+562,Creighton
+563,CS Bakersfield
+564,CS Fullerton
+565,CS Northridge
+566,CS Sacramento
+567,Dartmouth
+568,Davidson
+569,Dayton
+570,Delaware
+571,Delaware St
+572,Denver
+573,DePaul
+574,Detroit
+575,Drake
+576,Drexel
+577,Duke
+578,Duquesne
+579,E Illinois
+580,E Kentucky
+581,E Michigan
+582,E Washington
+583,East Carolina
+584,Edwardsville
+585,Elon
+586,ETSU
+587,Evansville
+588,F Dickinson
+589,Fairfield
+590,FL Atlantic
+591,FL Gulf Coast
+592,Florida
+593,Florida A&M
+594,Florida Intl
+595,Florida St
+596,Fordham
+597,Fresno St
+598,Furman
+599,G Washington
+600,Ga Southern
+601,Gardner Webb
+602,George Mason
+603,Georgetown
+604,Georgia
+605,Georgia St
+606,Georgia Tech
+607,Gonzaga
+608,Grambling
+609,Grand Canyon
+610,Hampton
+611,Hartford
+612,Harvard
+613,Hawaii
+614,High Point
+615,Hofstra
+616,Holy Cross
+617,Houston
+618,Houston Bap
+619,Howard
+620,Idaho
+621,Idaho St
+622,IL Chicago
+623,Illinois
+624,Illinois St
+625,Indiana
+626,Indiana St
+627,Iona
+628,Iowa
+629,Iowa St
+630,IPFW
+631,IUPUI
+632,Jackson St
+633,Jacksonville
+634,Jacksonville St
+635,James Madison
+636,Kansas
+637,Kansas St
+638,Kennesaw
+639,Kent
+640,Kentucky
+641,La Salle
+642,Lafayette
+643,Lamar
+644,Lehigh
+645,Liberty
+646,Lipscomb
+647,Long Beach St
+648,Long Island
+649,Longwood
+650,Louisiana Tech
+651,Louisville
+652,Loy Marymount
+653,Loyola MD
+654,Loyola-Chicago
+655,LSU
+656,MA Lowell
+657,Maine
+658,Manhattan
+659,Marist
+660,Marquette
+661,Marshall
+662,Maryland
+663,Massachusetts
+664,McNeese St
+665,MD E Shore
+666,Memphis
+667,Mercer
+668,Miami FL
+669,Miami OH
+670,Michigan
+671,Michigan St
+672,Middle Tenn St
+673,Minnesota
+674,Mississippi
+675,Mississippi St
+676,Missouri
+677,Missouri KC
+678,Missouri St
+679,Monmouth NJ
+680,Montana
+681,Montana St
+682,Morehead St
+683,Morgan St
+684,Morris Brown
+685,MS Valley St
+686,Mt St Mary's
+687,Murray St
+688,N Colorado
+689,N Dakota St
+690,N Illinois
+691,N Kentucky
+692,Navy
+693,NC A&T
+694,NC Central
+695,NC State
+696,NE Illinois
+697,NE Omaha
+698,Nebraska
+699,Nevada
+700,New Hampshire
+701,New Mexico
+702,New Mexico St
+703,New Orleans
+704,Niagara
+705,Nicholls St
+706,NJIT
+707,Norfolk St
+708,North Carolina
+709,North Dakota
+710,North Florida
+711,North Texas
+712,Northeastern
+713,Northern Arizona
+714,Northern Iowa
+715,Northwestern
+716,Northwestern LA
+717,Notre Dame
+718,Oakland
+719,Ohio
+720,Ohio St
+721,Oklahoma
+722,Oklahoma St
+723,Old Dominion
+724,Oral Roberts
+725,Oregon
+726,Oregon St
+727,Pacific
+728,Penn
+729,Penn St
+730,Pepperdine
+731,Pittsburgh
+732,Portland
+733,Portland St
+734,Prairie View
+735,Presbyterian
+736,Princeton
+737,Providence
+738,Purdue
+739,Quinnipiac
+740,Radford
+741,Rhode Island
+742,Rice
+743,Richmond
+744,Rider
+745,Robert Morris
+746,Rutgers
+747,S Carolina St
+748,S Dakota St
+749,S Illinois
+750,Sacred Heart
+751,Sam Houston St
+752,Samford
+753,San Diego
+754,San Diego St
+755,San Francisco
+756,San Jose St
+757,Santa Barbara
+758,Santa Clara
+759,Savannah St
+760,SC Upstate
+761,SE Louisiana
+762,SE Missouri St
+763,Seattle
+764,Seton Hall
+765,SF Austin
+766,Siena
+767,SMU
+768,South Alabama
+769,South Carolina
+770,South Dakota
+771,South Florida
+772,Southern Miss
+773,Southern Univ
+774,Southern Utah
+775,St Bonaventure
+776,St Francis NY
+777,St Francis PA
+778,St John's
+779,St Joseph's PA
+780,St Louis
+781,St Mary's CA
+782,St Peter's
+783,Stanford
+784,Stetson
+785,Stony Brook
+786,Syracuse
+787,TAM C. Christi
+788,TCU
+789,Temple
+790,Tennessee
+791,Tennessee St
+792,Tennessee Tech
+793,Texas
+794,Texas A&M
+795,Texas St
+796,Texas Tech
+797,TN Martin
+798,Toledo
+799,Towson
+800,Troy
+801,Tulane
+802,Tulsa
+803,TX Pan American
+804,TX Southern
+805,UAB
+806,UC Davis
+807,UC Irvine
+808,UC Riverside
+809,UCF
+810,UCLA
+811,ULL
+812,ULM
+813,UMBC
+814,UNC Asheville
+815,UNC Greensboro
+816,UNC Wilmington
+817,UNLV
+818,USC
+819,UT Arlington
+820,UT San Antonio
+821,Utah
+822,Utah St
+823,Utah Valley
+824,UTEP
+825,VA Commonwealth
+826,Valparaiso
+827,Vanderbilt
+828,Vermont
+829,Villanova
+830,Virginia
+831,Virginia Tech
+832,VMI
+833,W Carolina
+834,W Illinois
+835,W Kentucky
+836,W Michigan
+837,W Salem St
+838,Wagner
+839,Wake Forest
+840,Washington
+841,Washington St
+842,Weber St
+843,West Virginia
+844,WI Green Bay
+845,WI Milwaukee
+846,Wichita St
+847,William & Mary
+848,Winthrop
+849,Wisconsin
+850,Wofford
+851,Wright St
+852,Wyoming
+853,Xavier
+854,Yale
+855,Youngstown St
+856,Incarnate Word
