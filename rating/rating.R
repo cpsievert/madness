@@ -2,68 +2,84 @@ library(rstan)
 library(plyr)
 library(reshape2)
 
-
+# Season data
 d = read.csv("../raw/regular_season_results.csv")
-
 d$wteam = factor(d$wteam)
 d$lteam = factor(d$lteam)
-
 stopifnot(all.equal(levels(d$wteam), levels(d$lteam)))
 
-# Quick check for number of teams in each season
-ddply(d, .(season), summarize,
-      n_wteam = length(unique(wteam)),
-      n_lteam = length(unique(lteam)))
+# Submission data
+t = read.csv("../raw/sample_submission.csv")
+t$season = factor(substr(t$id,1,1))
+t$team1  = factor(substr(t$id,3,5), levels(d$wteam))
+t$team2  = factor(substr(t$id,7,9), levels(d$wteam))
 
-# Team records
-tmp = ddply(d, .(season, wteam), summarize, n_wins = length(wscore))
-
-m = melt(d[,c("season","wteam","lteam")], id.var="season")
-m$one = 1
-tmp= ddply(m, .(season, variable, value), summarize,
-           n = length(one))
-dd = dcast(tmp, variable~season+value~variable)
+# Keep only seasons needed for submission
+#d = d[d$season %in% levels(t$season),]
 
 
-elo_chess = "
-data {
-  int<lower=1> n;
-  int<lower=1> nteams;
-  int<lower=1> wteam[n];
-  int<lower=1> lteam[n];
-}
-parameters {
-  real<lower=0.001> sigma_theta;
-  real theta[nteams];
-}
+source("stan_models.R")
 
-transformed parameters {
-  real<lower=0,upper=1> delta[n];
-  for (i in 1:n) { 
-    delta[i] <- normal_cdf(theta[wteam[i]]-theta[lteam[i]], 0, 1);
-  }
-}
-model {
-  for (t in 1:nteams) {
-    theta[t] ~ normal(0,sigma_theta);
-  }
-  for (i in 1:n) {
-    1 ~ bernoulli(delta[i]);
-  }
-}
-"
+# Pre-compiled model
+compiled_elo_chess = stan_model(model_code=elo_chess_noprobs)
 
-# Test using season Q
-dQ = d[d$season=="Q",]
-dQ$wteam = factor(dQ$wteam)
-dQ$lteam = factor(dQ$lteam)
+# Run MCMC for submission seasons
+mcmc_elo_chess = 
+dlply(d, .(season), function(x) {
+  tourney = t[t$season==as.character(unique(x$season)),]
+  dat = list(ngames = nrow(x),
+             nteams = nlevels(x$wteam),
+#             nprobs = nrow(tourney),
+             wteam = as.numeric(x$wteam),
+             lteam = as.numeric(x$lteam),
+#             team1 = as.numeric(tourney$team1),
+#             team2 = as.numeric(tourney$team2),
+             whome = (x$wloc=="H") - (x$wloc=="A"))
 
-dat = list(n = nrow(dQ),
-           nteams = nlevels(dQ$wteam),
-           wteam = as.numeric(dQ$wteam),
-           lteam = as.numeric(dQ$lteam))
+  m = sampling(compiled_elo_chess, data=dat, verbose=FALSE, 
+               pars = c("theta","sigma_theta","homecourt")) # put prob back in
+  return(m)
+})
 
-m = stan(model_code = elo_chess, data=dat, iter = 1e3, verbose=FALSE, 
-         pars = c("theta","sigma_theta"))
-print(m)
-         
+
+
+
+
+compiled_predictor = stan_model(model_code=predictor_noprobs)
+
+mcmc_predictor = 
+dlply(d, .(season), function(x) {
+  tourney = t[t$season==as.character(unique(x$season)),]
+  dat = list(ngames = nrow(x),
+             nteams = nlevels(x$wteam),
+#             nprobs = nrow(tourney),
+             wteam = as.numeric(x$wteam),
+             lteam = as.numeric(x$lteam),
+             wteam_score = x$wscore,
+             lteam_score = x$lscore,
+#             team1 = as.numeric(tourney$team1),
+#             team2 = as.numeric(tourney$team2),
+             whome = (x$wloc=="H") - (x$wloc=="A"))
+    
+  m = sampling(compiled_predictor, data=dat, verbose=FALSE, 
+               pars = c("theta","sigma_theta","sigma","homecourt")) # put prob back in
+  return(m)
+})
+
+
+
+
+save.image("ratings.RData")
+
+keep = c(1,12,2,4:9)
+elo_chess_summary = ldply(mcmc_elo_chess, 
+  function(x) as.data.frame(summary(x)$summary[1:nlevels(d$wteam),]))
+elo_chess_summary$id = levels(d$wteam)
+write.csv(elo_chess_summary[,keep],file="elo_chess_summary.csv", row.names=F)
+
+predictor_summary = ldply(mcmc_predictor, 
+  function(x) as.data.frame(summary(x)$summary[1:nlevels(d$wteam),]))
+predictor_summary$id = levels(d$wteam)
+write.csv(predictor_summary[,keep],file="predictor_summary.csv", row.names=F)
+
+
