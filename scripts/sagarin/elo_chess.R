@@ -57,49 +57,22 @@ dlply(d, .(season), function(x) {
              whome = (x$wloc=="H") - (x$wloc=="A"))
 
   m = sampling(compiled_elo_chess, data=dat, verbose=FALSE, 
-               pars = c("theta","sigma_theta","homecourt")) # put prob back in
+               pars = c("theta","sigma_theta","homecourt"))
   return(m)
 })
 
 
 
 
-
-compiled_predictor = stan_model(model_code=predictor_noprobs)
-
-mcmc_predictor = 
-dlply(d, .(season), function(x) {
-  tourney = t[t$season==as.character(unique(x$season)),]
-  dat = list(ngames = nrow(x),
-             nteams = nlevels(x$wteam),
-#             nprobs = nrow(tourney),
-             wteam = as.numeric(x$wteam),
-             lteam = as.numeric(x$lteam),
-             wteam_score = x$wscore,
-             lteam_score = x$lscore,
-#             team1 = as.numeric(tourney$team1),
-#             team2 = as.numeric(tourney$team2),
-             whome = (x$wloc=="H") - (x$wloc=="A"))
-    
-  m = sampling(compiled_predictor, data=dat, verbose=FALSE, 
-               pars = c("theta","sigma_theta","sigma","homecourt")) # put prob back in
-  return(m)
-})
-
-
-
-
-save.image("ratings.RData")
+save.image("elo_chess.RData")
 
 keep = c(1,12,2,4:9)
 elo_chess_summary = ldply(mcmc_elo_chess, 
   function(x) as.data.frame(summary(x)$summary[1:nlevels(d$wteam),]))
 elo_chess_summary$id = levels(d$wteam)
-write.csv(elo_chess_summary[,keep],file="elo_chess_summary.csv", row.names=F)
+write.csv(elo_chess_summary[,keep],
+          file="../../data/team_statistics/elo_chess.csv", 
+          row.names=F)
 
-predictor_summary = ldply(mcmc_predictor, 
-  function(x) as.data.frame(summary(x)$summary[1:nlevels(d$wteam),]))
-predictor_summary$id = levels(d$wteam)
-write.csv(predictor_summary[,keep],file="predictor_summary.csv", row.names=F)
 
 

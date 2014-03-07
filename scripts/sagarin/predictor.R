@@ -45,31 +45,6 @@ model {
 "
 
 
-# Pre-compiled model
-compiled_elo_chess = stan_model(model_code=elo_chess_noprobs)
-
-# Run MCMC for submission seasons
-mcmc_elo_chess = 
-dlply(d, .(season), function(x) {
-  tourney = t[t$season==as.character(unique(x$season)),]
-  dat = list(ngames = nrow(x),
-             nteams = nlevels(x$wteam),
-#             nprobs = nrow(tourney),
-             wteam = as.numeric(x$wteam),
-             lteam = as.numeric(x$lteam),
-#             team1 = as.numeric(tourney$team1),
-#             team2 = as.numeric(tourney$team2),
-             whome = (x$wloc=="H") - (x$wloc=="A"))
-
-  m = sampling(compiled_elo_chess, data=dat, verbose=FALSE, 
-               pars = c("theta","sigma_theta","homecourt")) # put prob back in
-  return(m)
-})
-
-
-
-
-
 compiled_predictor = stan_model(model_code=predictor_noprobs)
 
 mcmc_predictor = 
@@ -77,34 +52,28 @@ dlply(d, .(season), function(x) {
   tourney = t[t$season==as.character(unique(x$season)),]
   dat = list(ngames = nrow(x),
              nteams = nlevels(x$wteam),
-#             nprobs = nrow(tourney),
              wteam = as.numeric(x$wteam),
              lteam = as.numeric(x$lteam),
              wteam_score = x$wscore,
              lteam_score = x$lscore,
-#             team1 = as.numeric(tourney$team1),
-#             team2 = as.numeric(tourney$team2),
              whome = (x$wloc=="H") - (x$wloc=="A"))
     
   m = sampling(compiled_predictor, data=dat, verbose=FALSE, 
-               pars = c("theta","sigma_theta","sigma","homecourt")) # put prob back in
+               pars = c("theta","sigma_theta","sigma","homecourt"))
   return(m)
 })
 
 
 
 
-save.image("ratings.RData")
+save.image("predictor.RData")
 
 keep = c(1,12,2,4:9)
-elo_chess_summary = ldply(mcmc_elo_chess, 
-  function(x) as.data.frame(summary(x)$summary[1:nlevels(d$wteam),]))
-elo_chess_summary$id = levels(d$wteam)
-write.csv(elo_chess_summary[,keep],file="elo_chess_summary.csv", row.names=F)
-
 predictor_summary = ldply(mcmc_predictor, 
   function(x) as.data.frame(summary(x)$summary[1:nlevels(d$wteam),]))
 predictor_summary$id = levels(d$wteam)
-write.csv(predictor_summary[,keep],file="predictor_summary.csv", row.names=F)
+write.csv(predictor_summary[,keep],
+          file="predictor.csv", 
+          row.names=F)
 
 
