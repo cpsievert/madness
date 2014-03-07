@@ -1,7 +1,7 @@
 library(rstan)
 library(plyr)
 
-source("read_regular_season_results.R")
+source("../read_regular_season_results.R")
 
 compiled_model = stan_model(file="elo_chess_model.txt")
 
@@ -30,6 +30,7 @@ keep = c(1,12,2,4:9)
 write.csv(summary[,keep],
           file="../../data/team_statistics/elo_chess.csv", 
           row.names=F)
+
 
 
 
