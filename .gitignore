@@ -8,6 +8,7 @@ create_db.R
 join_tables.R
 game by game.csv
 .Rproj.user
+.DS_Store
 
 # jarad's
 madness.Rproj
