@@ -22,7 +22,7 @@ sample_submission_all_seasons = data.frame(id=paste(tourney_teams$season,
                                                     tourney_teams$lowerid,
                                                     tourney_teams$upperid,
                                                     sep="_"),
-                                           pred=0)
+                                           pred=0.5)
 
 write.csv(sample_submission_all_seasons,
           "../data/sample_submission_all_seasons.csv", 
