@@ -44,7 +44,7 @@ model {
 "
 
 # Pre-compiled model
-compiled_elo_chess = stan_model(model_code=elo_chess_noprobs)
+compiled_elo_chess = stan_model(model_code=elo_chess)
 
 # Run MCMC for submission seasons
 mcmc_elo_chess = 

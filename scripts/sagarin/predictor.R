@@ -45,7 +45,7 @@ model {
 "
 
 
-compiled_predictor = stan_model(model_code=predictor_noprobs)
+compiled_predictor = stan_model(model_code=predictor)
 
 mcmc_predictor = 
 dlply(d, .(season), function(x) {
