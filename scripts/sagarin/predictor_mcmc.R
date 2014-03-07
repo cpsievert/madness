@@ -24,10 +24,11 @@ dlply(regular_season, .(season), function(x) {
 
 save.image("predictor_mcmc.RData")
 
-keep = c(1,12,2,4:9)
 summary = ldply(mcmc, 
   function(x) as.data.frame(summary(x)$summary[1:nlevels(d$wteam),]))
 summary$id = levels(d$wteam)
+
+keep = c(1,12,2,4:9)
 write.csv(summary[,keep],
           file="../../data/team_statistics/predictor.csv", 
           row.names=F)

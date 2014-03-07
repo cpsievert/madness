@@ -23,10 +23,11 @@ dlply(d, .(season), function(x) {
 
 save.image("elo_chess_mcmc.RData")
 
-keep = c(1,12,2,4:9)
 summary = ldply(mcmc, 
   function(x) as.data.frame(summary(x)$summary[1:nlevels(d$wteam),]))
 summary$id = levels(d$wteam)
+
+keep = c(1,12,2,4:9)
 write.csv(summary[,keep],
           file="../../data/team_statistics/elo_chess.csv", 
           row.names=F)
