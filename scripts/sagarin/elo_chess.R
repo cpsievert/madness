@@ -1,50 +1,10 @@
 library(rstan)
 library(plyr)
-library(reshape2)
 
-# Season data
-d = read.csv("../raw/regular_season_results.csv")
-d$wteam = factor(d$wteam)
-d$lteam = factor(d$lteam)
-stopifnot(all.equal(levels(d$wteam), levels(d$lteam)))
-
-# Submission data
-t = read.csv("../raw/sample_submission.csv")
-t$season = factor(substr(t$id,1,1))
-t$team1  = factor(substr(t$id,3,5), levels(d$wteam))
-t$team2  = factor(substr(t$id,7,9), levels(d$wteam))
-
-elo_chess = "
-data {
-  int<lower=1> ngames;
-  int<lower=1> nteams;
-  int<lower=1> nprobs;
-  int<lower=1> wteam[ngames];
-  int<lower=1> lteam[ngames];
-  int<lower=1> team1[nprobs];
-  int<lower=1> team2[nprobs];
-  int<lower=-1,upper=1> whome[ngames];
-}
-parameters {
-  real<lower=0.001> sigma_theta;
-  real theta[nteams];
-  real homecourt;
-}
-
-transformed parameters {
-  real<lower=0,upper=1> delta[ngames];
-  for (i in 1:ngames) { 
-    delta[i] <- normal_cdf(theta[wteam[i]]-theta[lteam[i]]+homecourt*whome[i], 0, 1); 
-  }
-}
-model {
-  for (t in 1:nteams) { theta[t] ~ normal(0,sigma_theta); }
-  for (i in 1:ngames) { 1 ~ bernoulli(delta[i]);  }
-}
-"
+source("read_regular_season_results.R")
 
 # Pre-compiled model
-compiled_elo_chess = stan_model(model_code=elo_chess)
+compiled_elo_chess = stan_model(file="elo_chess_model.txt")
 
 # Run MCMC for submission seasons
 mcmc_elo_chess = 
@@ -60,8 +20,6 @@ dlply(d, .(season), function(x) {
                pars = c("theta","sigma_theta","homecourt"))
   return(m)
 })
-
-
 
 
 save.image("elo_chess.RData")
