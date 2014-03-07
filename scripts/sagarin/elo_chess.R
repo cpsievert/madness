@@ -14,11 +14,34 @@ t$season = factor(substr(t$id,1,1))
 t$team1  = factor(substr(t$id,3,5), levels(d$wteam))
 t$team2  = factor(substr(t$id,7,9), levels(d$wteam))
 
-# Keep only seasons needed for submission
-#d = d[d$season %in% levels(t$season),]
+elo_chess = "
+data {
+  int<lower=1> ngames;
+  int<lower=1> nteams;
+  int<lower=1> nprobs;
+  int<lower=1> wteam[ngames];
+  int<lower=1> lteam[ngames];
+  int<lower=1> team1[nprobs];
+  int<lower=1> team2[nprobs];
+  int<lower=-1,upper=1> whome[ngames];
+}
+parameters {
+  real<lower=0.001> sigma_theta;
+  real theta[nteams];
+  real homecourt;
+}
 
-
-source("stan_models.R")
+transformed parameters {
+  real<lower=0,upper=1> delta[ngames];
+  for (i in 1:ngames) { 
+    delta[i] <- normal_cdf(theta[wteam[i]]-theta[lteam[i]]+homecourt*whome[i], 0, 1); 
+  }
+}
+model {
+  for (t in 1:nteams) { theta[t] ~ normal(0,sigma_theta); }
+  for (i in 1:ngames) { 1 ~ bernoulli(delta[i]);  }
+}
+"
 
 # Pre-compiled model
 compiled_elo_chess = stan_model(model_code=elo_chess_noprobs)
@@ -29,11 +52,8 @@ dlply(d, .(season), function(x) {
   tourney = t[t$season==as.character(unique(x$season)),]
   dat = list(ngames = nrow(x),
              nteams = nlevels(x$wteam),
-#             nprobs = nrow(tourney),
              wteam = as.numeric(x$wteam),
              lteam = as.numeric(x$lteam),
-#             team1 = as.numeric(tourney$team1),
-#             team2 = as.numeric(tourney$team2),
              whome = (x$wloc=="H") - (x$wloc=="A"))
 
   m = sampling(compiled_elo_chess, data=dat, verbose=FALSE, 
