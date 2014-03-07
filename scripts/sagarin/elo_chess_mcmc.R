@@ -1,7 +1,7 @@
 library(rstan)
 library(plyr)
 
-source("../read_regular_season_results.R")
+source("read_regular_season_results.R")
 
 compiled_model = stan_model(file="elo_chess_model.txt")
 

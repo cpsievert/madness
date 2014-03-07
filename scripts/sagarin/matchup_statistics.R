@@ -8,7 +8,7 @@ tmp = read.csv("../../data/sample_submission_all_seasons.csv")
 submission = colsplit(as.character(tmp$id), "_", c("season","lowerid","upperid"))
 
 # Create my id
-source("../read_regular_season_results.R")
+source("read_regular_season_results.R")
 submission$my_lowerid = match(submission$lowerid, levels(regular_season$wteam))
 submission$my_upperid = match(submission$upperid, levels(regular_season$wteam))
 
