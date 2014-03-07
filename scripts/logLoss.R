@@ -9,16 +9,25 @@
 # is read directly from the tourney_results.csv file provided by kaggle. Above are some of the
 # test cases I was using to test it. Its not super efficient, but it runs in a second or two.
 
-logLoss = function(preds, tourneyResults)
+# The seasons parameter allows you to specify a vector of seasons (in letter format) that you
+# want the logLoss score for. So seasons = c("A","B","C","F","M") would only run include the 
+# scores for those particular years.
+
+logLoss = function(preds, tourneyResults, seasons = LETTERS[1:18])
 {
+  seasons = toupper(seasons)
   tourneyResults = subset(tourneyResults, daynum >= 136)
   split = strsplit(as.character(preds[,1]), "_")
   preds2 = data.frame(matrix(unlist(split), ncol = 3, byrow = TRUE))
-  seasons = as.character(unique(preds2[,1]))
+  seasons = seasons[which(seasons %in% as.character(unique(preds2[,1])))]
+  cat("Evaluating for seasons: ", seasons, "\n\n")
   preds2 = cbind(preds2, preds[,2])
   score = 0
   counter = 0
-  
+  if(length(which(preds2[,4] == 0)) > 0)
+    preds2[which(preds2[,4] == 0),4] = .0000001
+  if(length(which(preds2[,4] == 1)) > 0)
+    preds2[which(preds2[,4] == 1),4] = .9999999
   for(i in 1:length(seasons))
   {
     thisSeason = subset(tourneyResults, season == seasons[i])
