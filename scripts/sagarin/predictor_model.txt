@@ -5,8 +5,6 @@ data {
   int<lower=1> lteam[ngames];
   int<lower=1> wteam_score[ngames];
   int<lower=1> lteam_score[ngames];
-  int<lower=1> team1[nprobs];
-  int<lower=1> team2[nprobs];
   int<lower=-1,upper=1> whome[ngames];
 }
 transformed data {
