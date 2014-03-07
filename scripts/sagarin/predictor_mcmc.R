@@ -8,11 +8,10 @@ compiled_model = stan_model(file="predictor_model.txt")
 # Run MCMC for all seasons
 mcmc = 
 dlply(regular_season, .(season), function(x) {
-  tourney = t[t$season==as.character(unique(x$season)),]
   dat = list(ngames = nrow(x),
              nteams = nlevels(x$wteam),
-             wteam = as.numeric(x$wteam),
-             lteam = as.numeric(x$lteam),
+             wteam  = as.numeric(x$wteam),
+             lteam  = as.numeric(x$lteam),
              wteam_score = x$wscore,
              lteam_score = x$lscore,
              whome = (x$wloc=="H") - (x$wloc=="A"))
@@ -25,8 +24,8 @@ dlply(regular_season, .(season), function(x) {
 save.image("predictor_mcmc.RData")
 
 summary = ldply(mcmc, 
-  function(x) as.data.frame(summary(x)$summary[1:nlevels(d$wteam),]))
-summary$id = levels(d$wteam)
+  function(x) as.data.frame(summary(x)$summary[1:nlevels(regular_season$wteam),]))
+summary$id = levels(regular_season$wteam)
 
 keep = c(1,12,2,4:9)
 write.csv(summary[,keep],

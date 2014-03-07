@@ -7,8 +7,7 @@ compiled_model = stan_model(file="elo_chess_model.txt")
 
 # Run MCMC for all seasons
 mcmc = 
-dlply(d, .(season), function(x) {
-  tourney = t[t$season==as.character(unique(x$season)),]
+dlply(regular_season, .(season), function(x) {
   dat = list(ngames = nrow(x),
              nteams = nlevels(x$wteam),
              wteam = as.numeric(x$wteam),
@@ -24,8 +23,8 @@ dlply(d, .(season), function(x) {
 save.image("elo_chess_mcmc.RData")
 
 summary = ldply(mcmc, 
-  function(x) as.data.frame(summary(x)$summary[1:nlevels(d$wteam),]))
-summary$id = levels(d$wteam)
+  function(x) as.data.frame(summary(x)$summary[1:nlevels(regular_season$wteam),]))
+summary$id = levels(regular_season$wteam)
 
 keep = c(1,12,2,4:9)
 write.csv(summary[,keep],
