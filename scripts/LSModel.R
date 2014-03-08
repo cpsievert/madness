@@ -75,6 +75,19 @@ t5 = strsplit(as.character(t4$id), split='_')
 out=t(as.data.frame(t5,dim=c(length(t5),3), row.names=NULL))
 row.names(out)=NULL
 out2 = matrix(NA, nrow(out), ncol(out))
+out2[out[,1] == "A",1] = 1
+out2[out[,1] == "B",1] = 2
+out2[out[,1] == "C",1] = 3
+out2[out[,1] == "D",1] = 4
+out2[out[,1] == "E",1] = 5
+out2[out[,1] == "F",1] = 6
+out2[out[,1] == "G",1] = 7
+out2[out[,1] == "H",1] = 8
+out2[out[,1] == "I",1] = 9
+out2[out[,1] == "J",1] = 10
+out2[out[,1] == "K",1] = 11
+out2[out[,1] == "L",1] = 12
+out2[out[,1] == "M",1] = 13
 out2[out[,1] == "N",1] = 14
 out2[out[,1] == "O",1] = 15
 out2[out[,1] == "P",1] = 16
@@ -108,5 +121,3 @@ for(i in 1:dim(t4)[1])
 row.names(out3) = rNames
 
 out3_Duke = out3[grepl("Duke", row.names(out3)),]
-
-#install.packages("lme4")
