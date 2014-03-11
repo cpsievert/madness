@@ -16,8 +16,8 @@ probs =
       prob[i] = mean(pnorm(theta[,sub$my_lowerid[i]]-theta[,sub$my_upperid[i]]))
     }
     
-    data.frame(lowerid = sub$my_lowerid[i],
-               upperid = sub$my_upperid[i],
+    data.frame(lowerid = sub$lowerid,
+               upperid = sub$upperid,
                pred = prob)
   })
 

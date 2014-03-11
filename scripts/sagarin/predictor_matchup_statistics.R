@@ -17,8 +17,8 @@ probs =
                            sigma))
     }
     
-    data.frame(lowerid = sub$my_lowerid[i],
-               upperid = sub$my_upperid[i],
+    data.frame(lowerid = sub$lowerid,
+               upperid = sub$upperid,
                pred = prob)
   })
 
