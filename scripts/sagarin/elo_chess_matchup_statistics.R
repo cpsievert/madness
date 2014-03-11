@@ -21,4 +21,4 @@ probs =
                pred = prob)
   })
 
-write.csv(probs, "../../data/matchup_statistics/elo_chess.csv", row.names=FALSE)
+source("matchup_statistics_write.R")

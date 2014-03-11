@@ -1,5 +1,6 @@
 library(plyr)
 library(reshape2)
+library(rstan)
 
 load(paste(model,"_mcmc.RData",sep=""))
 
@@ -16,4 +17,5 @@ submission$my_upperid = match(submission$upperid, levels(regular_season$wteam))
 for(i in 1:length(mcmc)){
   attr(mcmc[[i]],"name") <- names(mcmc)[i]
 }
+
 

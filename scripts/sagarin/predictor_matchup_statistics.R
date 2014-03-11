@@ -22,4 +22,5 @@ probs =
                pred = prob)
   })
 
-write.csv(probs, "../../data/matchup_statistics/predictor.csv", row.names=FALSE)
+
+source("matchup_statistics_write.R")
