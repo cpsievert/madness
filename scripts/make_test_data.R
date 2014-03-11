@@ -12,7 +12,7 @@
 #  a potential postseason game, with statistics for each team in the 
 #  matchup.
 #  Note:  It takes a little while for this to run.  Sorry!
-
+require(plyr)
 
 make_test_data <- function(games,...){
 input_list <- list(...)

@@ -8,7 +8,7 @@
 #  Other columns contain the team id's, year, and all the additional data given in the 
 #  "..." data files.  Any number of data files can be included.
 #  Note: only works for games from 2002-2003 onward
-
+require(plyr)
 
 
 makeX <- function(results,...){
