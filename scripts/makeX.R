@@ -1,7 +1,7 @@
 #  makeX is a function which creates an x matrix.  
-#  The first argument should be the tourney_results.csv file (for training)
+#  The first argument should be a data frame containing the tourney_results.csv file (for training)
 #  
-#  Additional arugments are any other data files which have a  "year" or "season" column and an "id" column.
+#  Additional arugments are any other data frames which have a  "year" or "season" column and an "id" column.
 #  
 #  The output will be a data frame where each row represents a postseason game.
 #  The first column indicates whether the lower id team won. 
@@ -12,10 +12,17 @@ require(plyr)
 
 
 makeX <- function(results,...){
+require(plyr)
 input_list <- list(...)
 n=length(input_list)
 datnames <- as.character(substitute(c(...))[-1])
 
+torm <- c(rep(1, n))
+for(i in 1:n){
+if("lowerid" %in% names(input_list[[i]])){
+torm[i] <- (-1)
+}
+}
 
 # a function which converts season letters to years, and drops off all 
 # years prior to 2003 
@@ -46,20 +53,25 @@ for(i in 1:n){
 	}
 	bnames <- paste(datnames[i], names(input_list[[i]]),sep=".")
 	names(input_list[[i]])[which(!(names(input_list[[i]])%in%
-		c("id","year")))] <- bnames[which(!(names(input_list[[i]])%in%
-		c("id","year")))]
+		c("id","year", "lowerid", "upperid")))] <- bnames[which(!(names(input_list[[i]])%in%
+		c("id","year", "lowerid", "upperid")))]
 }
 
 
-stats <- input_list[[1]]
-if(n>1){
-	stats <- join(stats,input_list[[2]])
-	if(n>2){
-		for(i in 3:n){
-			stats <- join(stats,input_list[[i]])
-		}
+nt <- length(which(torm==1))
+nm <- length(which(torm==-1))
+ts<- which(torm==1)
+ms<-which(torm==-1)
+
+if(nt>0){
+stats <- input_list[[ts[1]]]
+}
+if(nt>1){
+	for(i in 2:nt){
+		stats <- join(stats,input_list[[ts[i]]])
 	}
 }
+
 
 results <- seastoyear(results)
 results$lowwin <- 1
@@ -70,13 +82,13 @@ results[which(results$wteam>results$lteam),]$lowwin <- 0
 
 
 #determine hi team and low team by team id
-results$hiteam <- NA
-results$loteam <- NA
+results$upperid <- NA
+results$lowerid <- NA
 
 hit <- function(x){
 new <- x
-new$hiteam <- max(x$wteam,x$lteam)
-new$loteam <- min(x$wteam,x$lteam)
+new$upperid <- max(x$wteam,x$lteam)
+new$lowerid <- min(x$wteam,x$lteam)
 return(new)}
 
 #new data frame with hi team and low team
@@ -85,14 +97,41 @@ nresults<- adply(results, 1, hit)
 #combine team stats for loteam and hiteam into each row... get big rows!
 #this is the x matrix!
 combine_all <- function(res,stat){
-	new <- data.frame(res, hi = stat[which(stat$id==res$hiteam & stat$year==res$year),
+	new <- data.frame(res, upper = stat[which(stat$id==res$upperid & stat$year==res$year),
 		-which(names(stat) %in% c("year", "season", "id"))], 
-	lo = stat[which(stat$id==res$loteam & stat$year==res$year),
+	lower = stat[which(stat$id==res$lowerid & stat$year==res$year),
 		-which(names(stat) %in% c("year", "season", "id"))])
 	return(new)
 }
-x <- adply(nresults[,c(7,6,8,9)], 1, combine_all, stat=stats)
+
+if(exists("stats")){
+	x <- adply(nresults[,c(7,6,8,9)], 1, combine_all, stat=stats)
+	if(nm>0){
+		for(i in 1:nm){
+			x<- join(x,input_list[[ms[i]]])
+		}
+	}
+}
+
+else{
+	if(nm>0){
+		x <- join(nresults[,c(7,6,8,9)],input_list[[ms[1]]])
+	}
+	if(nm>1){
+		for(i in 2:nm){
+			x<- join(x,input_list[[ms[i]]])
+		}
+	}
+}
+
+x[,1] <- as.factor(x[,1])
+for(i in 1:dim(x)[2]){
+	if(!(is.factor(x[1,i]))){
+		x[,i] <- as.numeric(x[,i])
+	}
+}
 return(x)
 }
+
 
 
