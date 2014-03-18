@@ -22,14 +22,14 @@ dlply(regular_season, .(season), function(x) {
 
 save.image("elo_chess_mcmc.RData")
 
-summary = ldply(mcmc, 
-  function(x) as.data.frame(summary(x)$summary[1:nlevels(regular_season$wteam),]))
-summary$id = levels(regular_season$wteam)
-
-keep = c(1,12,2,4:9)
-write.csv(summary[,keep],
-          file="../../data/team_statistics/elo_chess.csv", 
-          row.names=F)
+# summary = ldply(mcmc, 
+#   function(x) as.data.frame(summary(x)$summary[1:nlevels(regular_season$wteam),]))
+# summary$id = levels(regular_season$wteam)
+# 
+# keep = c(1,12,2,4:9)
+# write.csv(summary[,keep],
+#           file="../../data/team_statistics/elo_chess.csv", 
+#           row.names=F)
 
 
 
