@@ -1,4 +1,5 @@
-library(plyr)
+require(plyr)
+require(reshape2)
 
 # Extract teams in the tournament
 tourney_results = read.csv("../data/raw/tourney_results.csv")
@@ -18,12 +19,26 @@ tourney_teams = ddply(tourney_results, .(season), function(x) {
 
 tourney_teams = tourney_teams[order(tourney_teams$season, tourney_teams$lowerid),]
 
+
+
+# Add in season S
+# A hack since season S tournament has not occurred yet
+tmp = colsplit(read.csv("../data/raw/sample_submission.csv")$id, "_", c("season","lowerid","upperid"))
+seasonS = data.frame(season=tmp$season, lowerid=tmp$lowerid, upperid=tmp$upperid)
+rm(tmp)
+
+tourney_teams = rbind(tourney_teams, seasonS)
+
 sample_submission_all_seasons = data.frame(id=paste(tourney_teams$season,
                                                     tourney_teams$lowerid,
                                                     tourney_teams$upperid,
                                                     sep="_"),
                                            pred=0.5)
 
+
+
+
 write.csv(sample_submission_all_seasons,
           "../data/sample_submission_all_seasons.csv", 
           row.names=FALSE)
+
