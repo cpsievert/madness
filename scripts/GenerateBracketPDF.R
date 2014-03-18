@@ -2,7 +2,7 @@ rm(list=ls())
 submission<-read.csv("./data/submission/predictor2014.csv")
 teams<-read.csv("./data/raw/teams.csv")
 seeds<-read.csv("./data/raw/tourney_seeds.csv")
-pdf("../PRED_Bracket",width=11,height=8.5)
+pdf("../PRED_Bracket.pdf",width=11,height=8.5)
 tgtseason<-"S"
 
 seeds$region<-substr(seeds$seed,1,1)
