@@ -10,16 +10,16 @@ summary$id = levels(regular_season$wteam)
 
 # Calculate strength of schedule
 opponents = read.csv("../../data/opponents.csv")
-opponents$my_teams     = match(opponents$teams,    levels(regular_season$wteam))
+opponents$my_teams     = match(opponents$team,    levels(regular_season$wteam))
 opponents$my_opponents = match(opponents$opponent, levels(regular_season$wteam))
 
 team_strength = 
-ddply(opponents, .(season,teams), function(x) {
+ddply(opponents, .(season,team), function(x) {
   theta = summary$mean[summary$season==unique(x$season)]
   data.frame(theta = theta[x$my_opponents])
 })
 
-tmp = ddply(team_strength, .(season,teams), summarise, strength_of_schedule=mean(theta))
+tmp = ddply(team_strength, .(season,team), summarise, strength_of_schedule=mean(theta))
 names(tmp)[2] = "id"
 
 write.csv(merge(summary,tmp, all=TRUE),
