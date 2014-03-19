@@ -2,6 +2,7 @@ d=read.csv("../data/ModelsAndPreviousSeason.csv")
 head(d)
 names(d)
 
+#tmp = factor(d$round, labels=levels(d$round)[c(8,1:7)])
 dsr=(d$lower.seed-d$upper.seed)/sqrt(as.numeric(d$round))
 x=log(d$pred_m.pred/(1-d$pred_m.pred))
 y=d$lo_win
@@ -10,6 +11,8 @@ summary(o)
 
 #To generate predictions for this year, use
 #b=coef(o)
+#pred = read.csv("../data/submission/predictor2014.csv")
+#xtest = log(pred$pred/(1-pred$pred))
 #LowWinProb=1/(1+exp(-b[1]-b[2]*xtest-b[3]*dsrtest))
 #where xtest is the logit of Jarad's pred for this season's
 #matchups and dsrtest is
