@@ -1,6 +1,4 @@
-setwd("C:\\Users\\dnett.IASTATE\\Desktop\\MarchMadness")
-
-d=read.csv("ModelsAndPreviousSeason.csv")
+d=read.csv("../data/ModelsAndPreviousSeason.csv")
 head(d)
 names(d)
 
