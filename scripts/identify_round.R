@@ -1,7 +1,7 @@
 library(plyr)
 library(stringr)
-seeds <- read.csv("raw/tourney_seeds.csv")
-res <- read.csv("raw/tourney_results.csv")
+seeds <- read.csv("../data/raw/tourney_seeds.csv")
+res <- read.csv("../data/raw/tourney_results.csv")
 
 #appends column to res to identify seed of winning team (wseed)
 names(seeds) <- gsub("^team$", "wteam", names(seeds))
@@ -17,6 +17,9 @@ res <- plyr::join(res, seeds, by=c("lteam", "season"))
 res$wregion <- substr(res$wseed, 0, 1)
 res$lregion <- substr(res$lseed, 0, 1)
 
+
+#
+
 #start building a matchup identifier (which is used to determine round)
 res$matchup <- NA
 res$wrank <- as.integer(str_extract_all(res$wseed, "[0-9]+"))
@@ -24,6 +27,7 @@ res$lrank <- as.integer(str_extract_all(res$lseed, "[0-9]+"))
 lowseed <- with(res, ifelse(wrank < lrank, wrank, lrank))
 highseed <- with(res, ifelse(wrank > lrank, wrank, lrank))
 res$matchup <- paste(lowseed, highseed, sep="-")
+
 
 #final four can have any matchup (so matchup really shouldn't count)!
 res$matchup[res$wregion != res$lregion] <- "final_four"
@@ -85,7 +89,16 @@ res$round[ddply(res, "season", summarise, rd2=matchup %in% rd2)[,2]] <- "2"
 res$round[ddply(res, "season", summarise, rd3=matchup %in% rd3)[,2]] <- "3"
 res$round[ddply(res, "season", summarise, rd4=matchup %in% rd4)[,2]] <- "4"
 
+regions <- gsub("X-W", "W-X", gsub("Y-W", "W-Y", gsub("Z-W", "W-Z",
+            gsub("Y-X", "X-Y", gsub("Z-X", "X-Z",  gsub("Z-Y", "Y-Z", 
+            paste(res$wregion, res$lregion, sep = "-")))))))
+# Double check that 'W-Y', 'W-Z', 'X-Y' and 'X-Z' are championship games
+#table(res$season, regions)
+res$round[grepl("W-X", regions) | grepl("Y-Z", regions)] <- "5"
+res$round[grepl("W-Y|W-Z|X-Y|X-Z", regions)] <- "6"
+
 #sanity checks
+table(res$season, res$round)
 table(res$round)/length(unique(res$season))
 #um does somebody know if this makes sense?
 table(subset(res, round %in% "preliminary")$season)
@@ -93,5 +106,5 @@ table(subset(res, round %in% "preliminary")$season)
 #don't have to save these columns
 res <- res[,-grep("final_four|wrank|lrank|wregion|lregion", names(res))]
 
-write.csv(res, file="tourney_results_with_round.csv", row.names=FALSE)
+write.csv(res, file="../data/tourney_results_with_round.csv", row.names=FALSE)
 
